@@ -1,9 +1,10 @@
+        // Dados dos jogos
         const popularGames = [
-            { title: "PEAK", imageUrl: "https://placehold.co/600x400/8B5CF6/FFFFFF?text=PEAK" },
-            { title: "NIGHTREIGN", imageUrl: "https://placehold.co/600x400/7C3AED/FFFFFF?text=NIGHTREIGN" },
-            { title: "ELDEN RING", imageUrl: "https://placehold.co/600x400/10B981/FFFFFF?text=ELDEN+RING" },
-            { title: "CYBERPUNK 2077", imageUrl: "https://placehold.co/600x400/F59E0B/000000?text=CYBERPUNK" },
-            { title: "STARFIELD", imageUrl: "https://placehold.co/600x400/3B82F6/FFFFFF?text=STARFIELD" },
+            { title: "PEAK", imageUrl: "https://placehold.co/600x400/8B5CF6/FFFFFF?text=PEAK", popularity: 10},
+            { title: "NIGHTREIGN", imageUrl: "https://placehold.co/600x400/7C3AED/FFFFFF?text=NIGHTREIGN", popularity: 9.5},
+            { title: "ELDEN RING", imageUrl: "https://placehold.co/600x400/10B981/FFFFFF?text=ELDEN+RING", popularity: 9.5},
+            { title: "CYBERPUNK 2077", imageUrl: "https://placehold.co/600x400/F59E0B/000000?text=CYBERPUNK", popularity: 9.5},
+            { title: "STARFIELD", imageUrl: "https://placehold.co/600x400/3B82F6/FFFFFF?text=STARFIELD", popularity: 9.5},
         ];
 
         // Função para criar um cartão de jogo
