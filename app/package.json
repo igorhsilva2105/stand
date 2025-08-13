@@ -1,0 +1,25 @@
+{
+  "name": "app",
+  "version": "1.0.0",
+  "description": "",
+  "main": "views/main.html",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "window": {
+    "title": "Domo",
+    "icon": "assets/icon.png",
+    "toolbar": true,
+    "frame": false,
+    "width": 1000,
+    "height": 1000,
+    "min_width": 400,
+    "min_height": 200,
+    "max_width": 1000,
+    "max_height": 1000,
+    "position": "mouse"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
