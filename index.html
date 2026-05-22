@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Android Terminal M3</title>
+    <meta name="theme-color" content="#141218">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="manifest" href="data:application/manifest+json,{
+        %22name%22:%22Terminal%20M3%22,
+        %22short_name%22:%22Term%22,
+        %22start_url%22:%22.%22,
+        %22display%22:%22standalone%22,
+        %22background_color%22:%22#141218%22,
+        %22theme_color%22:%22#D0BCFF%22,
+        %22icons%22:[{
+            %22src%22:%22data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48cmVjdCB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgcng9IjMyIiBmaWxsPSIjMjExRjI2Ii8+PHBhdGggZD0iTTMwLDMwIEw1MCw1MCBMMzAsNzAiIHN0cm9rZT0iI0QwQkNGRiIgc3Ryb2tlLXdpZHRoPSI4IiBmaWxsPSJub25lIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz48bGluZSB4MT0iNTUiIHkxPSI3MCIgeDI9Ijc1IiB5Mj0iNzAiIHN0cm9rZT0iI0YyQjhCNSIgc3Ryb2tlLXdpZHRoPSI4IiBzdHJva2UtbGluZWNhcD0icm91bmQiLz48L3N2Zz4=%22,
+            %22sizes%22:%22192x192%22,
+            %22type%22:%22image/svg+xml%22
+        }]
+    }">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Outfit:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            /* Material 3 Expressive Palette (Lavender Dark Default) */
+            --md-bg: #141218;
+            --md-surface: #211F26;
+            --md-surface-container: #36343B;
+            --md-primary: #D0BCFF;
+            --md-on-primary: #381E72;
+            --md-secondary: #CCC2DC;
+            --md-tertiary: #F2B8B5; /* Expressive Accent */
+            --md-error: #FFB4AB;
+            --md-text-main: #E6E0E9;
+            --md-text-muted: #CAC4D0;
+            
+            --font-mono: 'JetBrains Mono', monospace;
+            --font-ui: 'Outfit', sans-serif;
+            
+            /* Shapes */
+            --radius-xl: 32px;
+            --radius-full: 9999px;
+            
+            /* Elevation */
+            --elevation-3: 0 8px 24px rgba(0, 0, 0, 0.4);
+            
+            /* Transitions */
+            --transition-standard: 0.3s cubic-bezier(0.2, 0, 0, 1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--md-bg);
+            color: var(--md-text-main);
+            font-family: var(--font-mono);
+            font-size: 15px;
+            line-height: 1.6;
+            height: 100vh;
+            width: 100vw;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: background-color var(--transition-standard);
+        }
+
+        .app-container {
+            width: 95vw;
+            max-width: 900px;
+            height: 90vh;
+            max-height: 700px;
+            background-color: var(--md-surface);
+            border-radius: var(--radius-xl);
+            box-shadow: var(--elevation-3);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            transition: background-color var(--transition-standard), box-shadow var(--transition-standard);
+        }
+
+        .top-app-bar {
+            background-color: transparent;
+            padding: 16px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-family: var(--font-ui);
+            user-select: none;
+        }
+
+        .app-title {
+            font-size: 1.25rem;
+            font-weight: 500;
+            color: var(--md-text-main);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            letter-spacing: -0.5px;
+        }
+        
+        .app-icon {
+            width: 28px;
+            height: 28px;
+            background-color: var(--md-primary);
+            color: var(--md-on-primary);
+            border-radius: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+        .status-pill {
+            background-color: var(--md-surface-container);
+            color: var(--md-secondary);
+            padding: 6px 16px;
+            border-radius: var(--radius-full);
+            font-size: 0.85rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            background-color: var(--md-tertiary);
+            border-radius: 50%;
+        }
+
+        .terminal-body {
+            flex-grow: 1;
+            padding: 0 24px 24px 24px;
+            overflow-y: auto;
+            scroll-behavior: smooth;
+            /* Scrollbar M3 style */
+            scrollbar-width: thin;
+            scrollbar-color: var(--md-surface-container) transparent;
+        }
+
+        .terminal-body::-webkit-scrollbar {
+            width: 8px;
+        }
+        .terminal-body::-webkit-scrollbar-thumb {
+            background-color: var(--md-surface-container);
+            border-radius: 8px;
+        }
+
+        .log-line {
+            margin-bottom: 6px;
+            word-wrap: break-word;
+            opacity: 0;
+            transform: translateY(10px);
+            animation: slideIn 0.3s cubic-bezier(0.2, 0, 0, 1) forwards;
+        }
+
+        @keyframes slideIn {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .log-error { color: var(--md-error); }
+        .log-warning { color: var(--md-tertiary); }
+        .log-info { color: var(--md-primary); }
+        .log-system { color: var(--md-text-muted); font-size: 0.95em; }
+
+        /* M3 Expressive Prompt Design */
+        .input-line {
+            display: flex;
+            align-items: flex-start;
+            margin-top: 16px;
+            margin-bottom: 8px;
+        }
+
+        .prompt-chip {
+            background-color: var(--md-surface-container);
+            color: var(--md-primary);
+            padding: 6px 14px;
+            border-radius: 12px;
+            margin-right: 12px;
+            font-weight: 500;
+            white-space: nowrap;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.9em;
+            transition: background-color var(--transition-standard), color var(--transition-standard);
+        }
+
+        .prompt-user { color: var(--md-primary); }
+        .prompt-divider { color: var(--md-text-muted); opacity: 0.5; }
+        .prompt-path { color: var(--md-tertiary); }
+
+        .input-wrapper {
+            flex-grow: 1;
+            position: relative;
+            display: flex;
+            align-items: center;
+            min-height: 32px;
+        }
+
+        #cmd-input {
+            background: transparent;
+            border: none;
+            color: transparent;
+            font-family: inherit;
+            font-size: inherit;
+            width: 100%;
+            outline: none;
+            caret-color: transparent;
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            z-index: 10;
+        }
+        
+        .input-display {
+            color: var(--md-text-main);
+            white-space: pre-wrap;
+            word-break: break-all;
+            position: relative;
+        }
+
+        /* Expressive animated cursor */
+        .cursor {
+            display: inline-block;
+            width: 8px;
+            height: 1.2em;
+            background-color: var(--md-primary);
+            border-radius: 4px; /* Rounded cursor for M3 */
+            vertical-align: middle;
+            margin-left: 2px;
+            animation: pulseCursor 1s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+
+        @keyframes pulseCursor {
+            0%, 100% { opacity: 1; transform: scaleY(1); }
+            50% { opacity: 0.3; transform: scaleY(0.8); }
+        }
+
+        @media (max-width: 600px) {
+            .app-container {
+                width: 100vw;
+                height: 100vh;
+                border-radius: 0;
+                box-shadow: none;
+            }
+            .top-app-bar {
+                padding: 12px 16px;
+            }
+            .terminal-body {
+                padding: 0 16px 16px 16px;
+                font-size: 14px;
+            }
+            .prompt-chip {
+                padding: 4px 10px;
+                border-radius: 8px;
+            }
+        }
+        
+        /* M3 Easter Egg Animation */
+        @keyframes express {
+            0% { border-radius: var(--radius-xl); }
+            50% { border-radius: 60px 20px 80px 30px; }
+            100% { border-radius: var(--radius-xl); }
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="app-container" id="app">
+        <header class="top-app-bar">
+            <div class="app-title">
+                <div class="app-icon">>_</div>
+                Terminal
+            </div>
+            <div class="status-pill">
+                <div class="status-dot"></div>
+                Material UI
+            </div>
+        </header>
+
+        <main class="terminal-body" id="terminal-output" onclick="focusInput()">
+            <!-- Output dynamically injected here -->
+        </main>
+    </div>
+
+    <script>
+        const terminalOutput = document.getElementById('terminal-output');
+        
+        // Material 3 Dynamic Themes
+        const m3Themes = {
+            lavender: { bg: '#141218', surface: '#211F26', surfaceContainer: '#36343B', primary: '#D0BCFF', tertiary: '#F2B8B5', text: '#E6E0E9' },
+            mint:     { bg: '#0F1714', surface: '#192823', surfaceContainer: '#2D3E38', primary: '#80D8BA', tertiary: '#A8C7FA', text: '#E0E3E1' },
+            rose:     { bg: '#200F10', surface: '#2C1516', surfaceContainer: '#452A2A', primary: '#FFB4AB', tertiary: '#E2C36D', text: '#F4DDDD' },
+            ocean:    { bg: '#111418', surface: '#1A2027', surfaceContainer: '#2B343D', primary: '#A8C7FA', tertiary: '#C6BFFF', text: '#E2E2E5' }
+        };
+
+        // Mock File System
+        let currentPath = '~';
+        const fileSystem = {
+            '~': {
+                type: 'dir',
+                contents: {
+                    'documents': { type: 'dir', contents: {
+                        'material_guidelines.txt': { type: 'file', content: 'Material 3 Expressive emphasizes dynamic color, playful shapes, and adaptable typography.' },
+                        'passwords.bak': { type: 'file', content: 'admin: android16\nroot: expressive_ui' }
+                    }},
+                    'media': { type: 'dir', contents: {
+                        'ringtone.ogg': { type: 'file', content: '[AUDIO BINARY DATA]' }
+                    }},
+                    'readme.md': { type: 'file', content: 'Welcome to Android Expressive Terminal.\nType "help" for a list of commands.' },
+                    'system.log': { type: 'file', content: 'Material You engine initialized...\nDynamic colors generated.' }
+                }
+            }
+        };
+
+        const commandHistory = [];
+        let historyIndex = -1;
+        let currentInputContainer = null;
+        let currentInput = null;
+        let currentDisplay = null;
+
+        const bootSequence = [
+            { text: "Initializing Android 16 Environment...", class: "log-system", delay: 300 },
+            { text: "Loading Material 3 Expressive UI...", class: "log-system", delay: 200 },
+            { text: "Generating dynamic color tokens... [OK]", class: "log-system", delay: 400 },
+            { text: "System UI is ready.", class: "log-info", delay: 300 },
+            { text: "Type 'help' to see available commands.", class: "log-main", delay: 100 }
+        ];
+
+        function focusInput() {
+            if(currentInput) currentInput.focus();
+        }
+
+        async function runBootSequence() {
+            for (const step of bootSequence) {
+                await new Promise(r => setTimeout(r, step.delay));
+                printLog(step.text, step.class);
+            }
+            createNewInputLine();
+        }
+
+        function printLog(text, className = '') {
+            const line = document.createElement('div');
+            line.className = `log-line ${className}`;
+            line.innerHTML = text.replace(/\n/g, '<br>').replace(/ /g, '&nbsp;');
+            terminalOutput.insertBefore(line, currentInputContainer);
+            scrollToBottom();
+        }
+
+        function scrollToBottom() {
+            terminalOutput.scrollTop = terminalOutput.scrollHeight;
+        }
+
+        function getPromptHTML() {
+            return `
+                <div class="prompt-chip">
+                    <span class="prompt-user">user</span>
+                    <span class="prompt-divider">/</span>
+                    <span class="prompt-path">${currentPath}</span>
+                </div>`;
+        }
+
+        function getDirFromPath(path) {
+            if (path === '~') return fileSystem['~'];
+            let currentDir = fileSystem['~'];
+            if (path.startsWith('~/')) {
+                const parts = path.substring(2).split('/');
+                for (let part of parts) {
+                    if (currentDir.contents && currentDir.contents[part] && currentDir.contents[part].type === 'dir') {
+                        currentDir = currentDir.contents[part];
+                    } else {
+                        return null;
+                    }
+                }
+            }
+            return currentDir;
+        }
+
+        function createNewInputLine() {
+            if (currentInputContainer) {
+                const oldCursor = currentInputContainer.querySelector('.cursor');
+                if (oldCursor) oldCursor.remove();
+                if(currentInput) currentInput.disabled = true;
+            }
+
+            const container = document.createElement('div');
+            container.className = 'input-line';
+
+            container.innerHTML = getPromptHTML();
+
+            const wrapper = document.createElement('div');
+            wrapper.className = 'input-wrapper';
+
+            const display = document.createElement('span');
+            display.className = 'input-display';
+            
+            const cursor = document.createElement('span');
+            cursor.className = 'cursor';
+
+            const input = document.createElement('input');
+            input.type = 'text';
+            input.id = 'cmd-input';
+            input.autocomplete = 'off';
+            input.spellcheck = false;
+
+            input.addEventListener('input', () => {
+                display.textContent = input.value;
+                scrollToBottom();
+            });
+
+            input.addEventListener('keydown', handleKeyDown);
+
+            wrapper.appendChild(display);
+            wrapper.appendChild(cursor);
+            wrapper.appendChild(input);
+            container.appendChild(wrapper);
+
+            terminalOutput.appendChild(container);
+            
+            currentInputContainer = container;
+            currentInput = input;
+            currentDisplay = display;
+            
+            setTimeout(() => input.focus(), 10);
+            scrollToBottom();
+        }
+
+        function handleKeyDown(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                const cmd = currentInput.value.trim();
+                
+                // Print the executed command with prompt
+                const staticContainer = document.createElement('div');
+                staticContainer.className = 'input-line';
+                staticContainer.style.marginTop = '4px';
+                staticContainer.style.marginBottom = '4px';
+                staticContainer.innerHTML = `${getPromptHTML()} <span class="input-display" style="padding-top:4px;">${cmd}</span>`;
+                terminalOutput.insertBefore(staticContainer, currentInputContainer);
+
+                if (cmd) {
+                    commandHistory.push(cmd);
+                    historyIndex = commandHistory.length;
+                    processCommand(cmd);
+                } else {
+                    createNewInputLine();
+                }
+            } else if (e.key === 'ArrowUp') {
+                e.preventDefault();
+                if (historyIndex > 0) {
+                    historyIndex--;
+                    currentInput.value = commandHistory[historyIndex];
+                    currentDisplay.textContent = currentInput.value;
+                }
+            } else if (e.key === 'ArrowDown') {
+                e.preventDefault();
+                if (historyIndex < commandHistory.length - 1) {
+                    historyIndex++;
+                    currentInput.value = commandHistory[historyIndex];
+                    currentDisplay.textContent = currentInput.value;
+                } else {
+                    historyIndex = commandHistory.length;
+                    currentInput.value = '';
+                    currentDisplay.textContent = '';
+                }
+            }
+        }
+
+        function processCommand(rawCmd) {
+            const args = rawCmd.split(/\s+/);
+            const cmd = args[0].toLowerCase();
+
+            switch (cmd) {
+                case 'help':
+                    printLog(`Available commands:
+  help      - Show this message
+  clear     - Clear terminal output
+  ls        - List directory contents
+  cd [dir]  - Change directory
+  cat [file]- Display file contents
+  date      - Show current system date
+  theme     - Change Material You theme (lavender, mint, rose, ocean)
+  express   - Trigger expressive shape animation`);
+                    break;
+                case 'clear':
+                    terminalOutput.innerHTML = '';
+                    currentInputContainer = null;
+                    break;
+                case 'date':
+                    printLog(new Date().toString(), 'log-info');
+                    break;
+                case 'ls':
+                    executeLs(args);
+                    break;
+                case 'cd':
+                    executeCd(args);
+                    break;
+                case 'cat':
+                    executeCat(args);
+                    break;
+                case 'theme':
+                    executeTheme(args);
+                    break;
+                case 'express':
+                    document.getElementById('app').style.animation = 'express 2s ease-in-out';
+                    setTimeout(() => { document.getElementById('app').style.animation = ''; }, 2000);
+                    printLog('Applying expressive shapes...', 'log-tertiary');
+                    break;
+                default:
+                    printLog(`Command not found: ${cmd}`, 'log-error');
+            }
+            
+            createNewInputLine();
+        }
+
+        function executeLs(args) {
+            const dir = getDirFromPath(currentPath);
+            if (!dir || !dir.contents) {
+                printLog('Cannot read directory.', 'log-error');
+                return;
+            }
+            const items = Object.keys(dir.contents);
+            if (items.length === 0) return;
+            
+            let output = '';
+            items.forEach(item => {
+                const type = dir.contents[item].type;
+                if (type === 'dir') {
+                    output += `<span style="color: var(--md-tertiary); font-weight:bold; background: var(--md-surface-container); padding: 2px 8px; border-radius: 8px; margin-right: 8px;">${item}/</span> `;
+                } else {
+                    output += `<span style="margin-right: 12px;">${item}</span>`;
+                }
+            });
+            
+            const div = document.createElement('div');
+            div.className = `log-line`;
+            div.style.display = 'flex';
+            div.style.flexWrap = 'wrap';
+            div.style.gap = '8px';
+            div.style.marginTop = '4px';
+            div.innerHTML = output;
+            terminalOutput.insertBefore(div, currentInputContainer);
+            scrollToBottom();
+        }
+
+        function executeCd(args) {
+            if (args.length < 2) {
+                currentPath = '~';
+                return;
+            }
+            const target = args[1];
+            if (target === '..') {
+                if (currentPath !== '~') {
+                    const parts = currentPath.split('/');
+                    parts.pop();
+                    currentPath = parts.join('/');
+                    if (currentPath === '') currentPath = '~';
+                }
+                return;
+            }
+            if (target === '~') {
+                currentPath = '~';
+                return;
+            }
+            const currentDir = getDirFromPath(currentPath);
+            if (currentDir && currentDir.contents && currentDir.contents[target]) {
+                if (currentDir.contents[target].type === 'dir') {
+                    currentPath = currentPath === '~' ? `~/${target}` : `${currentPath}/${target}`;
+                } else {
+                    printLog(`cd: ${target}: Not a directory`, 'log-error');
+                }
+            } else {
+                printLog(`cd: ${target}: No such file or directory`, 'log-error');
+            }
+        }
+
+        function executeCat(args) {
+            if (args.length < 2) {
+                printLog('cat: missing operand', 'log-error');
+                return;
+            }
+            const target = args[1];
+            const currentDir = getDirFromPath(currentPath);
+            if (currentDir && currentDir.contents && currentDir.contents[target]) {
+                if (currentDir.contents[target].type === 'file') {
+                    printLog(currentDir.contents[target].content);
+                } else {
+                    printLog(`cat: ${target}: Is a directory`, 'log-error');
+                }
+            } else {
+                printLog(`cat: ${target}: No such file or directory`, 'log-error');
+            }
+        }
+
+        function executeTheme(args) {
+            if (args.length < 2) {
+                printLog('Usage: theme [lavender|mint|rose|ocean]', 'log-warning');
+                return;
+            }
+            const themeName = args[1].toLowerCase();
+            const theme = m3Themes[themeName];
+            
+            if (theme) {
+                const root = document.documentElement;
+                root.style.setProperty('--md-bg', theme.bg);
+                root.style.setProperty('--md-surface', theme.surface);
+                root.style.setProperty('--md-surface-container', theme.surfaceContainer);
+                root.style.setProperty('--md-primary', theme.primary);
+                root.style.setProperty('--md-tertiary', theme.tertiary);
+                root.style.setProperty('--md-text-main', theme.text);
+                
+                // Update meta theme color
+                document.querySelector('meta[name="theme-color"]').setAttribute('content', theme.bg);
+                
+                printLog(`Material You theme applied: ${themeName}`, 'log-info');
+            } else {
+                printLog(`Unknown theme: ${themeName}. Try: lavender, mint, rose, ocean.`, 'log-error');
+            }
+        }
+
+        // Initialize App
+        window.onload = () => {
+            runBootSequence();
+        };
+
+    </script>
+</body>
+</html>
