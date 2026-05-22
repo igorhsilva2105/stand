@@ -1,10 +1,16 @@
 const terminalOutput = document.getElementById('terminal-output');
 
-// Registrando o Service Worker (Opcional, mas recomendado para PWAs reais no futuro)
+// Registrando o Service Worker para suporte Offline e PWA
 if ('serviceWorker' in navigator) {
-    // Isso é apenas um stub, para a PWA ser instalável sem erros no Lighthouse
-    // Para funcionar offline real, você precisaria de um arquivo service-worker.js
-    console.log("Service Worker supported.");
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./service-worker.js')
+            .then(registration => {
+                console.log('ServiceWorker registrado com sucesso! Escopo:', registration.scope);
+            })
+            .catch(err => {
+                console.log('Falha ao registrar o ServiceWorker:', err);
+            });
+    });
 }
 
 // Material 3 Dynamic Themes
